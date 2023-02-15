@@ -1,7 +1,5 @@
 #include "main.h"
 
-/// @brief Init ADC.
-/// @param  .
 void _KhoiTao_ADC(void)
 {
     _ThietLapKenh_ADC(AN4_AN3_AN2_AN1_AN0);
@@ -11,24 +9,19 @@ void _KhoiTao_ADC(void)
     ADCS1 = 1;
 }
 
-/// @brief Read ADC.
-/// @param kenh Channel.
-/// @return Result.
-unsigned int _Read_ADC(char kenh)
+unsigned int _Read_ADC(char Kenh)
 {
-    _ChonKenh(kenh);
+    _ChonKenh(Kenh);
     __delay_us(5); // cho ADC thuc hien lay mau
-    GODONE = 1; // bat dau thuc hien chuyen doi AD
+    GODONE = 1;    // bat dau thuc hien chuyen doi AD
     while (GODONE); // cho ADC thuc hien chuyen doi xong
     // tra ve ket qua ADC sau khi chuyen doi xong
     return (((unsigned int)ADRESH) << 8) | ADRESL; // ghep byte thap va byte cao cua gia tri ADC
 }
 
-/// @brief Selection channel.
-/// @param kenh Channel.
-void _ChonKenh(char kenh)
+void _ChonKenh(char Kenh)
 {
-    switch (kenh)
+    switch (Kenh)
     {
         case 0:
         {
@@ -95,14 +88,10 @@ void _ChonKenh(char kenh)
             break;
         }
         default:
-        {
             break;
-        }
     }
 }
 
-/// @brief Config channel.
-/// @param config Config.
 void _ThietLapKenh_ADC(char config)
 {
     switch (config)
@@ -228,8 +217,6 @@ void _ThietLapKenh_ADC(char config)
             break;
         }
         default:
-        {
             break;
-        }
     }
 }

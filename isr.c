@@ -1,23 +1,16 @@
 #include "main.h"
 
-/// @brief ISR.
-/// @param  .
-/// @return Interrupt.
 void interrupt ISR(void)
 {
     if (TMR0IF)
     {
         count++;
         if (count > 3)
-        {
             count = 0;
-        }
         TMR0IF = 0;
     }
 }
 
-/// @brief Enable interrupts.
-/// @param name_interrupt Name interrupt.
 void _ENABLE_INTERRUPTS(char name_interrupt)
 {
     switch (name_interrupt)

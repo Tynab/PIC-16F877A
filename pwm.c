@@ -1,7 +1,5 @@
 #include "main.h"
 
-/// @brief Set duty PWM1.
-/// @param DutyCycle Duty cycle.
 void _SetDutyPWM1(unsigned int DutyCycle)
 {
     PR2 = 99;
@@ -10,8 +8,6 @@ void _SetDutyPWM1(unsigned int DutyCycle)
     CCP1Y = T2CKPS0;
 }
 
-/// @brief Setup PWM1.
-/// @param  .
 void _SetUpPWM1(void)
 {
     TRISC2 = 0;
@@ -31,8 +27,6 @@ void _SetUpPWM1(void)
     TMR2ON = 1;
 }
 
-/// @brief Set duty PWM2.
-/// @param DutyCycle Duty cycle.
 void _SetDutyPWM2(unsigned int DutyCycle)
 {
     PR2 = 99;
@@ -41,8 +35,6 @@ void _SetDutyPWM2(unsigned int DutyCycle)
     CCP2Y = T2CKPS0;
 }
 
-/// @brief Setup PWM2.
-/// @param  .
 void _SetUpPWM2(void)
 {
     TRISC1 = 0;
@@ -61,10 +53,11 @@ void _SetUpPWM2(void)
     _SetDutyPWM2(0);
     TMR2ON = 1;
 }
-
 /*
     Ap dung cong thuc chu ky PWM ta co:
-    T(pwm)=[PR2+1]*4*(Tosc)*(TMR2 Prescale Value)=[PR2+1]*4*(1/Fosc)*(TMR2 Prescale Value)
-    hay T(pwm)=[99+1]*4*(1/4)*1=100*10^(-6)=10^(-4)=10khz
+    T(pwm)=[PR2+1]*4*(Tosc)*(TMR2 Prescale Value)
+            =[PR2+1]*4*(1/Fosc)*(TMR2 Prescale Value)
+    hay T(pwm)=[99+1]*4*(1/4)*1
+                =100*10^(-6)=10^(-4)=10khz
     vay tan so de dieu khien dong co la 10(kHz)
 */

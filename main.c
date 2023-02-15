@@ -2,37 +2,16 @@
 
 __CONFIG(HS &WDTDIS &PWRTEN &UNPROTECT &BORDIS &LVPDIS);
 
-// Fields
-char i;
-char i60;
-char i20;
-char i30;
-char pp;
-char pc;
-char im = 60;
-char ir = 20;
-char il = 30;
-char ib = 20;
-char irl = 20;
-char irud = 20;
-char ic = 20;
-char icud = 20;
-char ilv = 30;
-char ig = 20;
-char lrpwm = 0;
-char delay = 5;
-char status = 1;
-int duty = 100;
-int value_adc;
+char lrpwm = 0, im = 60, ir = 20, il = 30, ib = 20, irl = 20, irud = 20, ic = 20, icud = 20, i60, i, i20, i30, delay = 5, ig = 20, pp, pc, status = 1, ilv = 30;
+int duty = 100, value_adc;
 
-// Declares
 void _Init_LCD(void);
 void _Init_IO(void);
 void _Delay(char time);
 void _Display_Number(char x, char y, int num);
-void _SetI60(char im);
-void _SetI20(char ir);
-void _SetI30(char il);
+void _Seti60(char im);
+void _Seti20(char ir);
+void _Seti30(char il);
 void _Processing(void);
 void _Main_Menu(void);
 void _M_M(char i60);
@@ -81,11 +60,8 @@ void _Win(void);
 void _Draw(void);
 void _Check_Point(char pp, char pc);
 
-/// @brief Main.
-/// @param  .
 void main(void)
 {
-    // init
     _Init_LCD();
     _Init_IO();
     _KhoiTao_ADC();
@@ -96,13 +72,11 @@ void main(void)
     _Processing();
 MainMenu:
     _Main_Menu();
-    _SetI60(im);
+    _Seti60(im);
     _M_M(i60);
     ENABLE = 0;
-    // run
     while (1)
     {
-        // check switch
         if (SW1 == 0)
         {
             while (SW1 == 0);
@@ -124,16 +98,13 @@ MainMenu:
         else if (SW4 == 0)
         {
             while (SW4 == 0);
-            _SetI60(im);
-            // check menu
+            _Seti60(im);
             if (i60 == 0)
             {
             ADCMenu:
                 _ADC();
-                // run adc
                 while (1)
                 {
-                    // check switch adc
                     if (SW1 == 0)
                     {
                         while (SW1 == 0);
@@ -162,12 +133,10 @@ MainMenu:
             {
             RELAYMenu:
                 _Relay();
-                _SetI20(ir);
+                _Seti20(ir);
                 _On_Off(i20);
-                // run replay
                 while (1)
                 {
-                    // check switch replay
                     if (SW1 == 0)
                     {
                         while (SW1 == 0);
@@ -177,32 +146,22 @@ MainMenu:
                     {
                         while (SW2 == 0);
                         ir--;
-                        _SetI20(ir);
-                        // check state replay
+                        _Seti20(ir);
                         if (i20 == 0)
-                        {
                             RELAY = 0;
-                        }
                         else
-                        {
                             RELAY = 1;
-                        }
                         goto RELAYMenu;
                     }
                     else if (SW3 == 0)
                     {
                         while (SW3 == 0);
                         ir++;
-                        _SetI20(ir);
-                        // check state replay
+                        _Seti20(ir);
                         if (i20 == 0)
-                        {
                             RELAY = 0;
-                        }
                         else
-                        {
                             RELAY = 1;
-                        }
                         goto RELAYMenu;
                     }
                     else if (SW4 == 0)
@@ -217,12 +176,10 @@ MainMenu:
             {
             BUZMenu:
                 _Buz();
-                _SetI20(ib);
+                _Seti20(ib);
                 _On_Off(i20);
-                // run buzz
                 while (1)
                 {
-                    // check switch buzz
                     if (SW1 == 0)
                     {
                         while (SW1 == 0);
@@ -232,42 +189,29 @@ MainMenu:
                     {
                         while (SW2 == 0);
                         ib--;
-                        _SetI20(ib);
-                        // check state buzz
+                        _Seti20(ib);
                         if (i20 == 0)
-                        {
                             BUZ = 0;
-                        }
                         else
-                        {
                             BUZ = 1;
-                        }
                         goto BUZMenu;
                     }
                     else if (SW3 == 0)
                     {
                         while (SW3 == 0);
                         ib++;
-                        _SetI20(ib);
-                        // check state buzz
+                        _Seti20(ib);
                         if (i20 == 0)
-                        {
                             BUZ = 0;
-                        }
                         else
-                        {
                             BUZ = 1;
-                        }
                         goto BUZMenu;
                     }
                     else if (SW4 == 0)
                     {
                         _Beap();
-                        // on buzz
                         while (SW4 == 0)
-                        {
                             BUZ = 1;
-                        }
                         BUZ = 0;
                         goto BUZMenu;
                     }
@@ -280,19 +224,12 @@ MainMenu:
                 _SetUpPWM2();
                 ENABLE = 1;
                 _Motor(lrpwm, duty);
-                // check turn motor
                 if (lrpwm == 1)
-                {
                     _Turn_Right_PWM(duty);
-                }
                 else
-                {
                     _Turn_Left_PWM(duty);
-                }
-                // run motor
                 while (1)
                 {
-                    // check switch motor
                     if (SW1 == 0)
                     {
                         while (SW1 == 0);
@@ -313,15 +250,10 @@ MainMenu:
                     else if (SW4 == 0)
                     {
                         while (SW4 == 0);
-                        // turning motor
                         if (lrpwm == 1)
-                        {
                             _Turn_Left_PWM(duty);
-                        }
                         else
-                        {
                             _Turn_Right_PWM(duty);
-                        }
                         goto MOTORMenu;
                     }
                 }
@@ -330,12 +262,10 @@ MainMenu:
             {
             LEDMenu:
                 _Led();
-                _SetI30(il);
+                _Seti30(il);
                 _L_M(i30);
-                // run led
                 while (1)
                 {
-                    // check switch led
                     if (SW1 == 0)
                     {
                         while (SW1 == 0);
@@ -356,18 +286,15 @@ MainMenu:
                     else if (SW4 == 0)
                     {
                         while (SW4 == 0);
-                        _SetI30(il);
-                        // menu led style
+                        _Seti30(il);
                         if (i30 == 0)
                         {
                         RunMenu:
                             _Run();
-                            _SetI20(irl);
+                            _Seti20(irl);
                             _Up_Down(i20);
-                            // run style
                             while (1)
                             {
-                                // check style
                                 if (SW1 == 0)
                                 {
                                     while (SW1 == 0);
@@ -388,17 +315,14 @@ MainMenu:
                                 else if (SW4 == 0)
                                 {
                                     while (SW4 == 0);
-                                    _SetI20(irl);
-                                    // check speed
+                                    _Seti20(irl);
                                     if (i20 == 0)
                                     {
                                     RunUp:
                                         _R_U();
                                         _Limit(delay);
-                                        // run speed
                                         while (1)
                                         {
-                                            // update speed
                                             if (SW1 == 0)
                                             {
                                                 while (SW1 == 0);
@@ -419,9 +343,7 @@ MainMenu:
                                             else if (SW4 == 0)
                                             {
                                                 while (SW4 == 0)
-                                                {
                                                     _Run_Up_LED(delay);
-                                                }
                                                 goto RunUp;
                                             }
                                         }
@@ -431,10 +353,8 @@ MainMenu:
                                     RunDown:
                                         _R_D();
                                         _Limit(delay);
-                                        // run speed
                                         while (1)
                                         {
-                                            // update speed
                                             if (SW1 == 0)
                                             {
                                                 while (SW1 == 0);
@@ -455,9 +375,7 @@ MainMenu:
                                             else if (SW4 == 0)
                                             {
                                                 while (SW4 == 0)
-                                                {
                                                     _Run_Down_LED(delay);
-                                                }
                                                 goto RunDown;
                                             }
                                         }
@@ -469,12 +387,10 @@ MainMenu:
                         {
                         CatchMenu:
                             _Catch();
-                            _SetI20(ic);
+                            _Seti20(ic);
                             _Up_Down(i20);
-                            // run style
                             while (1)
                             {
-                                // check style
                                 if (SW1 == 0)
                                 {
                                     while (SW1 == 0);
@@ -495,17 +411,14 @@ MainMenu:
                                 else if (SW4 == 0)
                                 {
                                     while (SW4 == 0);
-                                    _SetI20(ic);
-                                    // check speed
+                                    _Seti20(ic);
                                     if (i20 == 0)
                                     {
                                     CatchUp:
                                         _C_U();
                                         _Limit(delay);
-                                        // run speed
                                         while (1)
                                         {
-                                            // update speed
                                             if (SW1 == 0)
                                             {
                                                 while (SW1 == 0);
@@ -526,9 +439,7 @@ MainMenu:
                                             else if (SW4 == 0)
                                             {
                                                 while (SW4 == 0)
-                                                {
                                                     _Catch_Up_LED(delay);
-                                                }
                                                 goto CatchUp;
                                             }
                                         }
@@ -538,13 +449,12 @@ MainMenu:
                                     CatchDown:
                                         _C_D();
                                         _Limit(delay);
-                                        // run speed
                                         while (1)
                                         {
-                                            // update speed
                                             if (SW1 == 0)
                                             {
-                                                while (SW1 == 0);
+                                                while (SW1 == 0)
+                                                    ;
                                                 goto CatchMenu;
                                             }
                                             else if (SW2 == 0)
@@ -562,9 +472,7 @@ MainMenu:
                                             else if (SW4 == 0)
                                             {
                                                 while (SW4 == 0)
-                                                {
                                                     _Catch_Down_LED(delay);
-                                                }
                                                 goto CatchDown;
                                             }
                                         }
@@ -577,10 +485,8 @@ MainMenu:
                         HLMenu:
                             _H_L();
                             _Limit(delay);
-                            // run style
                             while (1)
                             {
-                                // check style
                                 if (SW1 == 0)
                                 {
                                     while (SW1 == 0);
@@ -601,9 +507,7 @@ MainMenu:
                                 else if (SW4 == 0)
                                 {
                                     while (SW4 == 0)
-                                    {
                                         _High_Low(delay);
-                                    }
                                     goto HLMenu;
                                 }
                             }
@@ -617,12 +521,10 @@ MainMenu:
                 pp = 3;
                 pc = 3;
                 _O_T_T();
-                _SetI20(ig);
+                _Seti20(ig);
                 _Level(i20);
-                // run game
                 while (1)
                 {
-                    // check switch game
                     if (SW1 == 0)
                     {
                         while (SW1 == 0);
@@ -643,17 +545,14 @@ MainMenu:
                     else if (SW4 == 0)
                     {
                         while (SW4 == 0);
-                        // menu game
                         if (i20 == 0)
                         {
                             _EASY();
                         EasyMenu:
-                            _SetI30(ilv);
+                            _Seti30(ilv);
                             _One_Two_Three(i30);
-                            // run level
                             while (1)
                             {
-                                // check back
                                 if (SW1 == 0)
                                 {
                                     while (SW1 == 0);
@@ -675,12 +574,10 @@ MainMenu:
                                 {
                                     while (SW4 == 0);
                                     _Check_Point(pp, pc);
-                                    _SetI30(ilv);
-                                    // check result
+                                    _Seti30(ilv);
                                     if (i30 == 0)
                                     {
                                         _One();
-                                        // return result
                                         switch (count)
                                         {
                                             case 0:
@@ -710,7 +607,6 @@ MainMenu:
                                     else if (i30 == 1)
                                     {
                                         _Two();
-                                        // return result
                                         switch (count)
                                         {
                                             case 0:
@@ -740,7 +636,6 @@ MainMenu:
                                     else if (i30 == 2)
                                     {
                                         _Three();
-                                        // return result
                                         switch (count)
                                         {
                                             case 0:
@@ -767,10 +662,8 @@ MainMenu:
                                             }
                                         }
                                     }
-                                    // compare result
                                     if (pp == 0)
                                     {
-                                        // end game
                                         if (pc == 0)
                                         {
                                             _Draw();
@@ -788,9 +681,7 @@ MainMenu:
                                         goto GameMenu;
                                     }
                                     else
-                                    {
                                         goto EasyMenu;
-                                    }
                                 }
                             }
                         }
@@ -798,12 +689,10 @@ MainMenu:
                         {
                             _HARD();
                         HardMenu:
-                            _SetI30(ilv);
+                            _Seti30(ilv);
                             _One_Two_Three(i30);
-                            // run level
                             while (1)
                             {
-                                // check back
                                 if (SW1 == 0)
                                 {
                                     while (SW1 == 0);
@@ -825,12 +714,10 @@ MainMenu:
                                 {
                                     while (SW4 == 0);
                                     _Check_Point(pp, pc);
-                                    _SetI30(ilv);
-                                    // check result
+                                    _Seti30(ilv);
                                     if (i30 == 0)
                                     {
                                         _One();
-                                        // return result
                                         switch (count)
                                         {
                                             case 0:
@@ -860,7 +747,6 @@ MainMenu:
                                     else if (i30 == 1)
                                     {
                                         _Two();
-                                        // return result
                                         switch (count)
                                         {
                                             case 0:
@@ -890,7 +776,6 @@ MainMenu:
                                     else if (i30 == 2)
                                     {
                                         _Three();
-                                        // return result
                                         switch (count)
                                         {
                                             case 0:
@@ -917,10 +802,8 @@ MainMenu:
                                             }
                                         }
                                     }
-                                    // compare result
                                     if (pp == 0)
                                     {
-                                        // end game
                                         if (pc == 0)
                                         {
                                             _Draw();
@@ -938,9 +821,7 @@ MainMenu:
                                         goto GameMenu;
                                     }
                                     else
-                                    {
                                         goto HardMenu;
-                                    }
                                 }
                             }
                         }
@@ -951,16 +832,12 @@ MainMenu:
     }
 }
 
-/// @brief Init LCD.
-/// @param  .
 void _Init_LCD(void)
 {
     lcd_init();
     lcd_putc('\f');
 }
 
-/// @brief Init IO.
-/// @param  .
 void _Init_IO(void)
 {
     TRISA0 = 0;
@@ -976,82 +853,51 @@ void _Init_IO(void)
     D1 = D2 = D3 = 0;
 }
 
-/// @brief Delay.
-/// @param time Milisecond.
 void _Delay(char time)
 {
     char i;
-    // step
     for (i = 0; i < time; i++)
-    {
         __delay_ms(100);
-    }
 }
 
-/// @brief Display number.
-/// @param x X.
-/// @param y Y.
-/// @param num Number.
 void _Display_Number(char x, char y, int num)
 {
     char i;
-    // put
     for (i = x;; i--)
     {
         lcd_gotoxy(i - 1, y);
         lcd_putc((num % 10) + 48);
         num /= 10;
-        // break
         if (num < 1)
-        {
             break;
-        }
     }
 }
 
-/// @brief Set I60
-/// @param im IM.
-void _SetI60(char im)
+void _Seti60(char im)
 {
-    // compare
     if (im < 0)
-    {
         im += 60;
-    }
     i60 = im % 6;
 }
 
-/// @brief Set IR.
-/// @param ir IR.
-void _SetI20(char ir)
+void _Seti20(char ir)
 {
-    // compare
     if (ir < 0)
-    {
         ir += 20;
-    }
     i20 = ir % 2;
 }
 
-/// @brief Set I30.
-/// @param il IL.
-void _SetI30(char il)
+void _Seti30(char il)
 {
-    // compare
     if (il < 0)
-    {
         il += 30;
-    }
     i30 = il % 3;
 }
 
-/// @brief Processing.
-/// @param  .
 void _Processing(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("   PROCESSING   ");
-    // show
     for (i = 0; i < 16; i++)
     {
         lcd_gotoxy(i, 1);
@@ -1060,16 +906,12 @@ void _Processing(void)
     }
 }
 
-/// @brief Main menu.
-/// @param . 
 void _Main_Menu(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("   MAIN MENU    ");
 }
 
-/// @brief Main menu detail.
-/// @param i60 I60.
 void _M_M(char i60)
 {
     lcd_gotoxy(0, 1);
@@ -1108,8 +950,6 @@ void _M_M(char i60)
     }
 }
 
-/// @brief Copyright.
-/// @param  .
 void _Copyright(void)
 {
     lcd_gotoxy(0, 0);
@@ -1119,8 +959,6 @@ void _Copyright(void)
     _Delay(10);
 }
 
-/// @brief ADC
-/// @param  .
 void _ADC(void)
 {
     lcd_gotoxy(0, 0);
@@ -1131,8 +969,6 @@ void _ADC(void)
     _Display_Number(16, 1, value_adc);
 }
 
-/// @brief Nick account.
-/// @param  .
 void _Nick(void)
 {
     lcd_gotoxy(0, 0);
@@ -1142,8 +978,6 @@ void _Nick(void)
     _Delay(10);
 }
 
-/// @brief Full name.
-/// @param  .
 void _Name(void)
 {
     lcd_gotoxy(0, 0);
@@ -1153,16 +987,12 @@ void _Name(void)
     _Delay(10);
 }
 
-/// @brief Replay.
-/// @param  .
 void _Relay(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("     RELAY      ");
 }
 
-/// @brief State.
-/// @param i20 I20.
 void _On_Off(char i20)
 {
     lcd_gotoxy(0, 1);
@@ -1181,8 +1011,6 @@ void _On_Off(char i20)
     }
 }
 
-/// @brief Birthday.
-/// @param  .
 void _Day(void)
 {
     lcd_gotoxy(0, 0);
@@ -1192,69 +1020,43 @@ void _Day(void)
     _Delay(10);
 }
 
-/// @brief BUZZ
-/// @param  .
 void _Buz(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("     BUZZER     ");
 }
 
-/// @brief Beap.
-/// @param  .
 void _Beap(void)
 {
     lcd_gotoxy(0, 1);
     lcd_puts("      BEAP      ");
 }
 
-/// @brief Motor
-/// @param lrpwm Turn.
-/// @param dutys Duty.
 void _Motor(char lrpwm, int dutys)
 {
     duty = _Check_Limit(60, 240, dutys);
     lcd_gotoxy(0, 0);
     if (lrpwm == 1)
-    {
         lcd_puts("     RIGHT      ");
-    }
     else
-    {
         lcd_puts("      LEFT      ");
-    }
     lcd_gotoxy(0, 1);
     if (duty == 60 || duty == 240)
-    {
         lcd_puts("Limit:          ");
-    }
     else
-    {
         lcd_puts("Duty Cycles:    ");
-    }
     _Display_Number(16, 1, duty);
 }
 
-/// @brief Check limit.
-/// @param x X.
-/// @param y Y.
-/// @param limit Limit.
-/// @return Valid value.
 int _Check_Limit(char x, char y, int limit)
 {
     if (limit < x)
-    {
         limit = x;
-    }
     else if (limit > y)
-    {
         limit = y;
-    }
     return limit;
 }
 
-/// @brief Turn left PWM.
-/// @param duty Duty.
 void _Turn_Left_PWM(int duty)
 {
     _SetDutyPWM1(0);
@@ -1262,8 +1064,6 @@ void _Turn_Left_PWM(int duty)
     lrpwm = 0;
 }
 
-/// @brief Turn right PWM.
-/// @param duty Duty.
 void _Turn_Right_PWM(int duty)
 {
     _SetDutyPWM1(duty);
@@ -1271,8 +1071,6 @@ void _Turn_Right_PWM(int duty)
     lrpwm = 1;
 }
 
-/// @brief Up down.
-/// @param i20 I20.
 void _Up_Down(char i20)
 {
     lcd_gotoxy(0, 1);
@@ -1291,33 +1089,23 @@ void _Up_Down(char i20)
     }
 }
 
-/// @brief Limit.
-/// @param delays Delay.
 void _Limit(char delays)
 {
     delay = _Check_Limit(3, 9, delays);
     lcd_gotoxy(0, 1);
     if (delay == 3 || delay == 9)
-    {
         lcd_puts("Limit:          ");
-    }
     else
-    {
         lcd_puts("Delay:          ");
-    }
     _Display_Number(16, 1, delay * 100);
 }
 
-/// @brief Led.
-/// @param  .
 void _Led(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("      LED       ");
 }
 
-/// @brief Led menu.
-/// @param i30 I30.
 void _L_M(char i30)
 {
     lcd_gotoxy(0, 1);
@@ -1341,56 +1129,42 @@ void _L_M(char i30)
     }
 }
 
-/// @brief Run.
-/// @param  .
 void _Run(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("      RUN       ");
 }
 
-/// @brief Run up.
-/// @param  .
 void _R_U(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("     RUN UP     ");
 }
 
-/// @brief Run down.
-/// @param  .
 void _R_D(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("    RUN DOWN    ");
 }
 
-/// @brief Catch.
-/// @param  .
 void _Catch(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("     CATCH      ");
 }
 
-/// @brief Catch up.
-/// @param  .
 void _C_U(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("    CATCH UP    ");
 }
 
-/// @brief Catch down.
-/// @param  .
 void _C_D(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("   CATCH DOWN   ");
 }
 
-/// @brief Run up led.
-/// @param delay Delay.
 void _Run_Up_LED(char delay)
 {
     D1 = D2 = D3 = 0;
@@ -1408,8 +1182,6 @@ void _Run_Up_LED(char delay)
     _Delay(delay);
 }
 
-/// @brief Run down led.
-/// @param delay Delay.
 void _Run_Down_LED(char delay)
 {
     D1 = D2 = D3 = 0;
@@ -1427,8 +1199,6 @@ void _Run_Down_LED(char delay)
     _Delay(delay);
 }
 
-/// @brief Catch up led.
-/// @param delay Delay.
 void _Catch_Up_LED(char delay)
 {
     D1 = D2 = D3 = 0;
@@ -1442,8 +1212,6 @@ void _Catch_Up_LED(char delay)
     _Delay(delay);
 }
 
-/// @brief Catch down led.
-/// @param delay Delay.
 void _Catch_Down_LED(char delay)
 {
     D1 = D2 = D3 = 0;
@@ -1457,16 +1225,12 @@ void _Catch_Down_LED(char delay)
     _Delay(delay);
 }
 
-/// @brief High low.
-/// @param  .
 void _H_L(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("    HIGH-LOW    ");
 }
 
-/// @brief High low run.
-/// @param delay Delay.
 void _High_Low(char delay)
 {
     D1 = D2 = D3 = 0;
@@ -1476,16 +1240,12 @@ void _High_Low(char delay)
     _Delay(delay);
 }
 
-/// @brief One Two Three.
-/// @param  .
 void _O_T_T(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts(" ONE-TWO-THREE  ");
 }
 
-/// @brief Level
-/// @param i20 I20.
 void _Level(char i20)
 {
     lcd_gotoxy(0, 1);
@@ -1504,24 +1264,18 @@ void _Level(char i20)
     }
 }
 
-/// @brief Easy.
-/// @param  .
 void _EASY(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("      EASY      ");
 }
 
-/// @brief Hard.
-/// @param  .
 void _HARD(void)
 {
     lcd_gotoxy(0, 0);
     lcd_puts("      HARD      ");
 }
 
-/// @brief Selection game.
-/// @param i30 I30.
 void _One_Two_Three(char i30)
 {
     lcd_gotoxy(0, 1);
@@ -1545,8 +1299,6 @@ void _One_Two_Three(char i30)
     }
 }
 
-/// @brief Selected 1.
-/// @param  .
 void _One(void)
 {
     for (i = 3; i > 0; i--)
@@ -1556,8 +1308,6 @@ void _One(void)
     }
 }
 
-/// @brief Selected 2.
-/// @param  .
 void _Two(void)
 {
     for (i = 3; i > 0; i--)
@@ -1567,8 +1317,6 @@ void _Two(void)
     }
 }
 
-/// @brief Selected 3.
-/// @param  .
 void _Three(void)
 {
     for (i = 3; i > 0; i--)
@@ -1578,9 +1326,6 @@ void _Three(void)
     }
 }
 
-/// @brief Rock.
-/// @param pp Player.
-/// @param pc PC.
 void _Rock(char pp, char pc)
 {
     lcd_gotoxy(12, 1);
@@ -1589,9 +1334,6 @@ void _Rock(char pp, char pc)
     _Delay(30);
 }
 
-/// @brief Paper.
-/// @param pp Player.
-/// @param pc PC.
 void _Paper(char pp, char pc)
 {
     lcd_gotoxy(11, 1);
@@ -1600,9 +1342,6 @@ void _Paper(char pp, char pc)
     _Delay(30);
 }
 
-/// @brief Scissor.
-/// @param pp Player.
-/// @param pc PC.
 void _Scissor(char pp, char pc)
 {
     lcd_gotoxy(9, 1);
@@ -1611,8 +1350,6 @@ void _Scissor(char pp, char pc)
     _Delay(30);
 }
 
-/// @brief Close.
-/// @param  .
 void _Close(void)
 {
     for (i = 0; i < 3; i++)
@@ -1631,8 +1368,6 @@ void _Close(void)
     }
 }
 
-/// @brief Win.
-/// @param  .
 void _Win(void)
 {
     for (i = 0; i < 3; i++)
@@ -1651,8 +1386,6 @@ void _Win(void)
     }
 }
 
-/// @brief Draw.
-/// @param  .
 void _Draw(void)
 {
     for (i = 0; i < 3; i++)
@@ -1671,9 +1404,6 @@ void _Draw(void)
     }
 }
 
-/// @brief Check point.
-/// @param pp Player.
-/// @param pc PC.
 void _Check_Point(char pp, char pc)
 {
     lcd_gotoxy(0, 0);

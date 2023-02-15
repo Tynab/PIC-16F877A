@@ -1,7 +1,5 @@
 #include "main.h"
 
-/// @brief Init timer0.
-/// @param  
 void _InitTimer0(void)
 {
     // OPTION_REG
@@ -12,29 +10,24 @@ void _InitTimer0(void)
     GIE = 1;             // cho phep ngat toan cuc
 }
 
-/// @brief Setup timer0.
-/// @param source_signal Source signal. 
-/// @param prescaler Prescaler.
 void _SETUP_TIMER_0(char source_signal, char prescaler)
 {
     switch (source_signal)
     {
-        case INTERNAL:
-        {
-            T0CS = 0; // chon che do TIMER
-            PSA = 0; // dinh bo ti le cho TIMER
-            break;
-        }
-        case EXTERNAL:
-        {
-            T0CS = 1; // chon che do COUNTER
-            PSA = 1; // dinh bo ti le cho COUNTER
-            break;
-        }
-        default: // khi co dieu kien nao duoc thoa man
-        {
-            break;
-        }
+    case INTERNAL:
+    {
+        T0CS = 0; // chon che do TIMER
+        PSA = 0;  // dinh bo ti le cho TIMER
+        break;
+    }
+    case EXTERNAL:
+    {
+        T0CS = 1; // chon che do COUNTER
+        PSA = 1;  // dinh bo ti le cho COUNTER
+        break;
+    }
+    default: // khi co dieu kien nao duoc thoa man
+        break;
     }
     switch (prescaler)
     {
@@ -103,14 +96,10 @@ void _SETUP_TIMER_0(char source_signal, char prescaler)
             break;
         }
         default: // khi khong co dieu kien nao duoc thoa man
-        {
             break;
-        }
     }
 }
 
-/// @brief Set timer0.
-/// @param value Value.
 void _SET_TIMER0(unsigned char value)
 {
     TMR0 = value; // ghi gia tri vao thanh ghi TIMER0
