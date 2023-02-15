@@ -16,6 +16,7 @@
     #define AN1_AN0_Vref_AN3_AN2 12
     #define AN0 13
     #define AN0_Vref_AN3_AN2 14
+    
     void _KhoiTao_ADC(void);             // ham khoi tao khoi ADC
     unsigned int _Read_ADC(char Kenh);   // ham doc gia tri ADC
     void _ChonKenh(char Kenh);           // chon kenh lay mau

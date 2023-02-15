@@ -1,5 +1,6 @@
 #ifndef __MAIN_H
     #define __MAIN_H
+    
     #include <htc.h>
     #include <math.h>
     #include <stdlib.h>
@@ -9,6 +10,7 @@
     #include "isr.h"
     #include "adc.h"
     #include "timer.h"
+
     #define _XTAL_FREQ 4000000
     #define SW1 RB0
     #define SW2 RB1

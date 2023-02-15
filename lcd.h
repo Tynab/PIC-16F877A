@@ -1,5 +1,6 @@
 #ifndef _LCD_H_
     #define _LCD_H_
+    
     #include <htc.h>
     // Khai bao tan so thach anh dao dong
     #ifndef _XTAL_FREQ
